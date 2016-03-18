@@ -18,6 +18,7 @@ public class Body {
     private Vector r;      // position
     private Vector v;      // velocity
     private final double mass;   // mass
+    private final double radius; // radius of the window/universe
     public ArrayList xCoords = new ArrayList(); // ArrayList containing all of the x positions that the Body has occupied
     public ArrayList yCoords = new ArrayList(); // ArrayList containing all of the y positions that the Body has occupied
 
@@ -28,10 +29,11 @@ public class Body {
      * @param v is the velocity vector of the body
      * @param mass is the mass of the body
      */
-    public Body(Vector r, Vector v, double mass) {
+    public Body(Vector r, Vector v, double mass, double radius) {
         this.r = r;
         this.v = v;
         this.mass = mass;
+        this.radius = radius;
     } // Body( Vector, Vector, double )
 
     /**
@@ -41,6 +43,14 @@ public class Body {
      * @param dt is the period of time that has passed
      */
     public void move(Vector f, double dt) {
+        if(r.cartesian(0) >= radius || r.cartesian(0) <= -radius){
+            double[] vect = {-0.95 * v.cartesian(0), v.cartesian(1)}; 
+            v = new Vector(vect);
+        }
+        if(r.cartesian(1) >= radius || r.cartesian(1) <= -radius){
+            double[] vect = {v.cartesian(0), -0.95 * v.cartesian(1)}; 
+            v = new Vector(vect);
+        }
         Vector a = f.times(1/mass);
         v = v.plus(a.times(dt));
         r = r.plus(v.times(dt));

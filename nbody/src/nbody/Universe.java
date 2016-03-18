@@ -26,6 +26,8 @@ public class Universe {
     private final double radius;     // radius of universe
     private final int N;             // number of bodies
     private final Body[] orbs;       // array of N bodies
+    private boolean[][] stars;
+    private double inc;
     //public static boolean[][] stars = new boolean[200][200]; //array that determines where to draw stars
 
     // read universe from file
@@ -42,8 +44,16 @@ public class Universe {
         radius = inputStream.readDouble();
         StdDraw.setXscale(-radius, +radius);
         StdDraw.setYscale(-radius, +radius);
+        
+        //describes where the stars will be drawn in the Universe
+        stars = new boolean[200][200];
+        stars = drawStars(stars);
+        inc = (this.radius * 2)/stars.length;
 
-        // read in the N bodies
+        //read in the N bodies
+        //rx and ry are tne starting position
+        //vx and vy are the starting velocities
+        //mass is the mass of the body
         orbs = new Body[N];
         for (int i = 0; i < N; i++) {
             double rx = inputStream.readDouble();
@@ -55,7 +65,7 @@ public class Universe {
             double[] velocity = {vx, vy};
             Vector r = new Vector(position);
             Vector v = new Vector(velocity);
-            orbs[i] = new Body(r, v, mass);
+            orbs[i] = new Body(r, v, mass, radius);
         } // for
     } // Universe()
 
@@ -103,18 +113,15 @@ public class Universe {
     public static void main(String[] args) {
         Universe newton = new Universe( args[1] );
         double dt = Double.parseDouble(args[0]);
-        boolean[][] stars = new boolean[200][200];
-        stars = drawStars(stars);
-        double inc = 24e10/stars.length;
         
         while (true) {
             StdDraw.clear(new Color(0,0,0));
             StdDraw.setPenColor(new Color(255,255,255));
             StdDraw.setPenRadius(0.002);
-            for (int i = 0; i < stars.length; i++){
-                for(int j = 0; j < stars[0].length; j++){
-                    if(stars[i][j]){
-                        StdDraw.point(-12e10 + (i*inc), -12e10 + (j*inc));
+            for (int i = 0; i < newton.stars.length; i++){
+                for(int j = 0; j < newton.stars[0].length; j++){
+                    if(newton.stars[i][j]){
+                        StdDraw.point(-newton.radius + (i*newton.inc), -newton.radius + (j*newton.inc));
                     }
                 }
             }
