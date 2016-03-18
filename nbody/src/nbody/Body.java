@@ -19,6 +19,8 @@ public class Body {
     private Vector v;      // velocity
     private final double mass;   // mass
     private final double radius; // radius of the window/universe
+    private double bounceCountX = 0;
+    private double bounceCountY = 0;
     public ArrayList xCoords = new ArrayList(); // ArrayList containing all of the x positions that the Body has occupied
     public ArrayList yCoords = new ArrayList(); // ArrayList containing all of the y positions that the Body has occupied
 
@@ -41,15 +43,29 @@ public class Body {
      * <p>on the forces affecting the body over time
      * @param f is the force vector acting on this Body
      * @param dt is the period of time that has passed
+     * @param bounce is whether or not we want the bodies to bounce off of the sides or not
      */
-    public void move(Vector f, double dt) {
-        if(r.cartesian(0) >= radius || r.cartesian(0) <= -radius){
-            double[] vect = {-0.95 * v.cartesian(0), v.cartesian(1)}; 
-            v = new Vector(vect);
-        }
-        if(r.cartesian(1) >= radius || r.cartesian(1) <= -radius){
-            double[] vect = {v.cartesian(0), -0.95 * v.cartesian(1)}; 
-            v = new Vector(vect);
+    public void move(Vector f, double dt, boolean bounce) {
+        //If the Body runs into the barrier, reverse its speed.
+        //Add a counter so that if it is still outside the barrier after 10ms it won;t reverse again.
+        //Reset counter on bounce, add to counter if no bounce.
+        //Enabled for both x and y directions
+        if (bounce) {
+            if ((r.cartesian(0) >= radius || r.cartesian(0) <= -radius) && bounceCountX > 2) {
+                double[] vect = {-0.9 * v.cartesian(0), v.cartesian(1)};
+                v = new Vector(vect);
+                bounceCountX = 0;
+            } else {
+                bounceCountX++;
+            }
+
+            if ((r.cartesian(1) >= radius || r.cartesian(1) <= -radius) && bounceCountY > 2) {
+                double[] vect = {v.cartesian(0), -0.9 * v.cartesian(1)};
+                v = new Vector(vect);
+                bounceCountY = 0;
+            } else {
+                bounceCountY++;
+            }
         }
         Vector a = f.times(1/mass);
         v = v.plus(a.times(dt));

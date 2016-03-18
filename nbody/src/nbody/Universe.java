@@ -27,7 +27,7 @@ public class Universe {
     private final int N;             // number of bodies
     private final Body[] orbs;       // array of N bodies
     private boolean[][] stars;
-    private double inc;
+    private final double inc;
     //public static boolean[][] stars = new boolean[200][200]; //array that determines where to draw stars
 
     // read universe from file
@@ -89,7 +89,7 @@ public class Universe {
 
         // move the bodies
         for (int i = 0; i < N; i++) {
-            orbs[i].move(f[i], dt);
+            orbs[i].move(f[i], dt, true);
         } // for
     } // increaseTime( double )
 
