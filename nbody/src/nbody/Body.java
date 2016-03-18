@@ -19,8 +19,9 @@ public class Body {
     private Vector v;      // velocity
     private final double mass;   // mass
     private final double radius; // radius of the window/universe
-    private double bounceCountX = 0;
-    private double bounceCountY = 0;
+    private final int trailLength = 100; 
+    private double bounceCountX = 0; // count between bounces in the x direction
+    private double bounceCountY = 0; // count between bounces in the y direction
     public ArrayList xCoords = new ArrayList(); // ArrayList containing all of the x positions that the Body has occupied
     public ArrayList yCoords = new ArrayList(); // ArrayList containing all of the y positions that the Body has occupied
 
