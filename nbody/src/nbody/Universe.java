@@ -23,15 +23,17 @@ import java.awt.Color;
  */
 public class Universe {
 
-    private final double radius;     // radius of universe
-    private final int N;             // number of bodies
-    private final Body[] orbs;       // array of N bodies
-    private boolean[][] stars;       // grid on which to place stars
-    private final double inc;        // divide the length of the universe into equal parts
-    private final boolean bounce;    // should the bodies bounce off the walls
-    private final boolean customColors; //does the input file contain custom colors for the bodies
-    //public static boolean[][] stars = new boolean[200][200]; //array that determines where to draw stars
-
+    private final double radius;         // radius of universe
+    private final int N;                 // number of bodies
+    private final Body[] orbs;           // array of N bodies
+    private boolean[][] stars;           // grid on which to place stars
+    private final double inc;            // divide the length of the universe into equal parts
+    private final boolean bounce;        // should the bodies bounce off the walls
+    private final boolean customColors;  // does the input file contain custom colors for the bodies
+    private final boolean angleInput;    // takes an angle input and places the body at that angle from the horizontal (solarSystem only)
+    private boolean randomAngle = false; // will place all bodies at a random angle from the horizontal
+    //false by default
+    
     // read universe from file
     public Universe(String fileName) {
 
@@ -47,6 +49,15 @@ public class Universe {
         
         // does the inout file contain custom colors
         customColors = inputStream.readBoolean();
+        
+        // takes an angle input and places the body at that angle from the horizontal (solarSystem only)
+        // if true, position and velocity will be written as if the planet were at 0 degrees
+        angleInput = inputStream.readBoolean();
+        
+        // randomAngle will place all bodies at a random angle from the horizontal
+        if(angleInput){
+            randomAngle = inputStream.readBoolean();
+        }
 
         // the set scale for drawing on screen
         radius = inputStream.readDouble();
@@ -56,21 +67,45 @@ public class Universe {
         //describes where the stars will be drawn in the Universe
         stars = new boolean[200][200];
         stars = drawStars(stars);
+        //Diameter of the universe divided by the length of the array is the distance between each potential star
         inc = (this.radius * 2)/stars.length;
 
         //read in the N bodies
         //rx and ry are tne starting position
         //vx and vy are the starting velocities
         //mass is the mass of the body
+        //red, green, and blue are color attributes
         orbs = new Body[N];
         for (int i = 0; i < N; i++) {
             int red;
             int green;
             int blue;
+            double angle;
             double rx = inputStream.readDouble();
             double ry = inputStream.readDouble();
             double vx = inputStream.readDouble();
             double vy = inputStream.readDouble();
+            
+            //change the x and y compents of velocity and position based on an angle input
+            if(angleInput){
+                // There will only be a positive x position and a negative y velocity
+                double rMag = rx;
+                double vMag = -vy;
+                if(randomAngle){
+                    angle = Math.random() * 360;
+                }
+                else{ 
+                    angle = inputStream.readDouble();
+                }
+                // angle must be specified in radians
+                angle = Math.toRadians(angle);
+                // position based on trig rules
+                rx = Math.cos(angle) * rMag;
+                ry = Math.sin(angle) * rMag;
+                // velocity is the integral of position, thus the change in trig formulas
+                vx = Math.sin(angle) * vMag;
+                vy = -Math.cos(angle) * vMag;                
+            }
             double mass = inputStream.readDouble();
             if (customColors){
                 red = inputStream.readInt();
