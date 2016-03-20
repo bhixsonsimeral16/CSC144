@@ -26,8 +26,9 @@ public class Universe {
     private final double radius;     // radius of universe
     private final int N;             // number of bodies
     private final Body[] orbs;       // array of N bodies
-    private boolean[][] stars;
-    private final double inc;
+    private boolean[][] stars;       // grid on which to place stars
+    private final double inc;        // divide the length of the universe into equal parts
+    private final boolean bounce;    // should the bodies bounce off the walls
     //public static boolean[][] stars = new boolean[200][200]; //array that determines where to draw stars
 
     // read universe from file
@@ -39,6 +40,9 @@ public class Universe {
 
         // number of bodies
         N = inputStream.readInt();
+        
+        // should the bodies bounce off of the walls
+        bounce = inputStream.readBoolean();
 
         // the set scale for drawing on screen
         radius = inputStream.readDouble();
@@ -89,7 +93,7 @@ public class Universe {
 
         // move the bodies
         for (int i = 0; i < N; i++) {
-            orbs[i].move(f[i], dt, true);
+            orbs[i].move(f[i], dt, bounce);
         } // for
     } // increaseTime( double )
 
