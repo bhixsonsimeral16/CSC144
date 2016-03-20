@@ -22,7 +22,11 @@ public class Body {
     private final int trailLength = 100; // controls the length of the tails (larger numbers represent longer tails)
     private final int bodyScale = 10000; // scales the size of the Bodies on a log scale (larger means smaller Bodies)
     // determines the rate at which the colors of the bodies change, should be scaled to the velocities of the bodies
+    private final int red;
+    private final int green;
+    private final int blue;
     private final float colorControl = 10000f;
+    private final boolean customColors;
     private double bounceCountX = 0; // count between bounces in the x direction
     private double bounceCountY = 0; // count between bounces in the y direction
     public ArrayList xCoords = new ArrayList(); // ArrayList containing all of the x positions that the Body has occupied
@@ -36,11 +40,15 @@ public class Body {
      * @param mass is the mass of the body
      * @param radius is the radius of the Universe
      */
-    public Body(Vector r, Vector v, double mass, double radius) {
+    public Body(Vector r, Vector v, double mass, double radius, boolean customColors, int red, int green, int blue) {
         this.r = r;
         this.v = v;
         this.mass = mass;
         this.radius = radius;
+        this.customColors = customColors;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     } // Body( Vector, Vector, double )
 
     /**
@@ -102,10 +110,14 @@ public class Body {
      */
     public void draw() {
         double massScale = Math.log(this.mass)/bodyScale;
-        double colorV = v.magnitude();
-        if(colorV < colorControl) colorV = colorControl;
-        StdDraw.setPenColor(Color.getHSBColor(colorControl / (float) colorV, 1.0f, 1.0f));
-        
+        if(!customColors){
+            double colorV = v.magnitude();
+            if(colorV < colorControl) colorV = colorControl;
+            StdDraw.setPenColor(Color.getHSBColor(colorControl / (float) colorV, 1.0f, 1.0f));
+        }
+        else if (customColors){
+            StdDraw.setPenColor(new Color(red, green, blue));
+        }
         xCoords.add(r.cartesian(0));
         yCoords.add(r.cartesian(1));
         
@@ -130,9 +142,14 @@ public class Body {
 
     // this method is only needed if you want to change the size of the bodies
     public void draw(double penRadius) {
-        double colorV = v.magnitude();
-        if(colorV < 10000) colorV = 10000;
-        StdDraw.setPenColor(Color.getHSBColor(10000f / (float) colorV, 1.0f, 1.0f));
+        if(!customColors){
+            double colorV = v.magnitude();
+            if(colorV < colorControl) colorV = colorControl;
+            StdDraw.setPenColor(Color.getHSBColor(colorControl / (float) colorV, 1.0f, 1.0f));
+        }
+        else if (customColors){
+            StdDraw.setPenColor(new Color(red, green, blue));
+        }
         
         xCoords.add(r.cartesian(0));
         yCoords.add(r.cartesian(1));

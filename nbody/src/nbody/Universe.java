@@ -29,6 +29,7 @@ public class Universe {
     private boolean[][] stars;       // grid on which to place stars
     private final double inc;        // divide the length of the universe into equal parts
     private final boolean bounce;    // should the bodies bounce off the walls
+    private final boolean customColors; //does the input file contain custom colors for the bodies
     //public static boolean[][] stars = new boolean[200][200]; //array that determines where to draw stars
 
     // read universe from file
@@ -43,6 +44,9 @@ public class Universe {
         
         // should the bodies bounce off of the walls
         bounce = inputStream.readBoolean();
+        
+        // does the inout file contain custom colors
+        customColors = inputStream.readBoolean();
 
         // the set scale for drawing on screen
         radius = inputStream.readDouble();
@@ -60,16 +64,29 @@ public class Universe {
         //mass is the mass of the body
         orbs = new Body[N];
         for (int i = 0; i < N; i++) {
+            int red;
+            int green;
+            int blue;
             double rx = inputStream.readDouble();
             double ry = inputStream.readDouble();
             double vx = inputStream.readDouble();
             double vy = inputStream.readDouble();
             double mass = inputStream.readDouble();
+            if (customColors){
+                red = inputStream.readInt();
+                green = inputStream.readInt();
+                blue = inputStream.readInt();
+            }
+            else{
+                red = 0;
+                green = 0;
+                blue = 0;
+            }
             double[] position = {rx, ry};
             double[] velocity = {vx, vy};
             Vector r = new Vector(position);
             Vector v = new Vector(velocity);
-            orbs[i] = new Body(r, v, mass, radius);
+            orbs[i] = new Body(r, v, mass, radius, customColors, red, green, blue);
         } // for
     } // Universe()
 
