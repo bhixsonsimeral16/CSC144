@@ -3,6 +3,7 @@ package nbody;
 import edu.princeton.cs.In;
 import edu.princeton.cs.StdDraw;
 import java.awt.Color;
+import javafx.scene.input.KeyCode;
 
 /**
  * ****************************************************************************
@@ -33,6 +34,8 @@ public class Universe {
     private final boolean angleInput;    // takes an angle input and places the body at that angle from the horizontal (solarSystem only)
     private boolean randomAngle = false; // will place all bodies at a random angle from the horizontal
     //false by default
+    private double zoom = 2;             //zoom scale
+    private double currentRadius;
     
     // read universe from file
     public Universe(String fileName) {
@@ -61,6 +64,7 @@ public class Universe {
 
         // the set scale for drawing on screen
         radius = inputStream.readDouble();
+        currentRadius = radius;
         StdDraw.setXscale(-radius, +radius);
         StdDraw.setYscale(-radius, +radius);
         
@@ -181,14 +185,16 @@ public class Universe {
                     }
                 }
             }
-            /*for(int i = -1; i < 1; i+=0.01){
-                for (int j = -1; j < 1; i+=0.01){
-                    double rng = Math.random();
-                    if(rng < .95){
-                        StdDraw.point(i, j);
-                    }
-                }
-            }*/
+/*
+            if(StdDraw.isKeyPressed(17)){
+                StdDraw.setXscale((-currentRadius * zoom));
+                StdDraw.setYscale((-currentRadius * zoom));
+            }
+            if(StdDraw.isKeyPressed(18)){
+                StdDraw.setXscale = 
+                StdDraw.setYscale = 
+            }
+*/
             newton.increaseTime(dt);
             newton.draw();
             StdDraw.show(10);
