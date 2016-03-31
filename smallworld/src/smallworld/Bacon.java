@@ -1,8 +1,10 @@
 package smallworld;
 
 import edu.princeton.cs.In;
+import edu.princeton.cs.StdDraw;
 import edu.princeton.cs.StdIn;
 import edu.princeton.cs.StdOut;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Objects;
 import smallworld.Graph;
@@ -55,6 +57,31 @@ public class Bacon {
             list.add(item);
         }
         return list;
+    }
+    
+    //replace with StdDraw.filledCircle(x, y, radius)
+    public static void drawFilledCircle(int red, int green, int blue, double r){
+        StdDraw.setPenColor(new Color(red, green, blue));
+        StdDraw.setPenRadius(r);
+        StdDraw.point(0, 0);
+    }
+    
+    public static void drawCirclePoints(ArrayList<String> list, double r){
+        StdDraw.setPenColor(new Color(0, 0, 0));
+        StdDraw.setPenRadius(0.01);
+        double layers = 0;
+        double count = 0;
+        for(String s : list){
+            double x = (r + layers) * Math.cos(Math.toRadians(360 *(count / (24 + layers))));
+            double y = (r + layers) * Math.sin(Math.toRadians(360 *(count / (24 + layers))));
+            StdDraw.point(x, y);
+
+            StdDraw.text(x, y + 0.001, s);
+            count++;
+            if(count % (24 + layers) == 0){
+                layers++;
+            }
+        }
     }
     
     
@@ -114,10 +141,15 @@ public class Bacon {
                 bacon8.add(actor);
             }
         }
-        System.out.println("Actors with a Bacon Number of 5\n");
-        for(String v : bacon5){
-            System.out.println(v);
-        }
+//        System.out.println("Actors with a Bacon Number of 5\n");
+//        for(String v : bacon5){
+//            System.out.println(v);
+//        }
+        StdDraw.setScale(-30, 30);
+        
+        drawCirclePoints(bacon1, 20);
+        
+        
             
             
             
